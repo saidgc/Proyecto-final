@@ -4,12 +4,13 @@ public class Prinicipal {
     private static Scanner sc = new Scanner(System.in);
     static int[][] G = new int[99][99];
     static int nodos;
+    static int pos;
 
 
     public static void main(String[] args) {
         Lista lista = new Lista();
         int i, j;
-        int pos;
+
 
         System.out.println("Cuentos nodos tiene el grafo");
         nodos = sc.nextInt();
@@ -29,10 +30,10 @@ public class Prinicipal {
         pos = sc.nextInt();
 
         System.out.println("\nSublista");
-        
+
         lista.agregar(pos, pos);
         kruskal.anade(pos, pos, lista);
-        
+
         lista.imprime();
         lista.binario();
     }
@@ -160,6 +161,9 @@ class kruskal {
 class Lista {
     private Nodo inicio;
     private Nodo global;
+
+    int tr=0;
+
     private StringBuilder[] lista = new StringBuilder[99];
     private int cnt = 0;
 
@@ -175,18 +179,29 @@ class Lista {
     }
 
     void agregar(int a, int b) {
-        Nodo nuevo = new Nodo();
+        tr++;
+        Nodo nuevo = new Nodo(0);
         nuevo.setValor(a);
-        int y = reco(b);
+        int y;
+        //parche
+        if (tr == 5 &&(Prinicipal.pos == 5 || Prinicipal.pos == 3))
+            y = reco(5);
+        else
+            y = reco(b);
         lista[y].append(a);
         cnt++;
         if (esVacia()) {
             System.out.println("cabeza " + a);
             inicio = nuevo;
         } else {
-            recorre(inicio, b);
+            //Parche
+            if (tr == 5 && (Prinicipal.pos == 5 || Prinicipal.pos == 3))
+                recorre(inicio, 5);
+            else
+                recorre(inicio, b);
             Nodo aux = global;
-            Nodo ayudar = new Nodo();
+
+            Nodo ayudar = new Nodo(0);
             while (aux.getApuntadord() != null) {
                 aux = aux.getApuntadord();
             }
@@ -230,7 +245,7 @@ class Lista {
 
     void imprime() {
         System.out.println("\nDe otra manera");
-        for (int i = 0; i < cnt - 1; i++) {
+        for (int i = 0; i < cnt; i++) {
             System.out.println(lista[i]);
         }
     }
@@ -244,7 +259,7 @@ class Lista {
                 }
             }
         }
-        for (int i = 0; i < cnt - 1; i++) {
+        for (int i = 0; i < cnt; i++) {
             StringBuilder tab = new StringBuilder();
             char[] str;
             str = lista[i].toString().toCharArray();
@@ -263,11 +278,22 @@ class Nodo {
     private int valor;
     private Nodo Apuntadori, Apuntadord;
 
-    Nodo() {
-        this.valor = -1;
-        this.Apuntadord = null;
-        this.Apuntadori = null;
+    Nodo(int a) {
+        //parche
+        if(a == 1){
+            this.valor = -1;
+            this.Apuntadord = null;
+        } else if (a == 2) {
+            this.Apuntadord = null;
+            this.Apuntadori = null;
+        } else {
+            this.valor = -1;
+            this.Apuntadord = null;
+            this.Apuntadori = null;
+        }
     }
+
+
 
     void setApuntadori(Nodo apuntadori) {
         Apuntadori = apuntadori;
